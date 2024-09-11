@@ -54,78 +54,55 @@ Evaluate the model with the testing data.
 ### Register Number: 212222230014
 ```python
 
-Include your code here
 
-
-### To Read CSV file from Google Drive :
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
 from google.colab import auth
 import gspread
 from google.auth import default
-import pandas as pd
-
-## To train and test
-from sklearn.model_selection import train_test_split
-
-## To scale
-from sklearn.preprocessing import MinMaxScaler
-
-## To create a neural network model
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
-
-### Authenticate User:
 auth.authenticate_user()
 creds, _ = default()
 gc = gspread.authorize(creds)
-
-### Open the Google Sheet and convert into DataFrame :
-worksheet = gc.open('Deep Learning').sheet1
-rows = worksheet.get_all_values()
-df = pd.DataFrame(rows[1:], columns = rows[0])
-
-df = df.astype({'Input':'float'})
-df = df.astype({'Output':'float'})
-df.head()
-
-x=df[['Input']].values
-y=df[['Output']].values
-
-x
-y
-
-x_train,x_test,y_train,y_test= train_test_split(x,y,test_size = 0.4, random_state =35)
-
+worksheet = gc.open('dl_ex1').sheet1
+data = worksheet.get_all_values()
+dataset1 = pd.DataFrame(data[1:], columns=data[0])
+dataset1 = dataset1.astype({'Input':'float'})
+dataset1 = dataset1.astype({'Output':'float'})
+dataset1.head()
+X = dataset1[['Input']].values
+y = dataset1[['Output']].values
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.33,random_state=33)
 Scaler = MinMaxScaler()
-Scaler.fit(x_train)
-
-X_train1 = Scaler.transform(x_train)
-
-#Create the model
+Scaler.fit(X_train)
+X_train1 = Scaler.transform(X_train)
 ai_brain = Sequential([
-    Dense(7,activation='relu'),
-    Dense(14,activation='relu'),
+    Dense(8,activation = 'relu'),
+    Dense(10,activation = 'relu'),
     Dense(1)
-])
-
-#Compile the model
-ai_brain.compile(optimizer = 'rmsprop' , loss = 'mse')
-
-# Fit the model
-ai_brain.fit(X_train1 , y_train,epochs = 3000)
-
+    ])
+ai_brain.compile(optimizer='rmsprop',loss='mse')
+ai_brain.fit(X_train1,y=y_train,epochs=2000)
 loss_df = pd.DataFrame(ai_brain.history.history)
-
 loss_df.plot()
-X_test1 =Scaler.transform(x_test)
+X_test1 = Scaler.transform(X_test)
 ai_brain.evaluate(X_test1,y_test)
-X_n1=[[11]]
-X_n1_1=Scaler.transform(X_n1)
+X_n1 = [[4]]
+X_n1_1 = Scaler.transform(X_n1)
 ai_brain.predict(X_n1_1)
+
+
+
+
+
+
 ```
 
 ## Dataset Information
 
-![image](https://github.com/user-attachments/assets/4571a885-0e07-42ce-8643-bbb006372066)
+![image](https://github.com/user-attachments/assets/4d630e2b-f652-4929-9a1e-63b83390c08d)
 
 
 ## OUTPUT
@@ -133,7 +110,7 @@ ai_brain.predict(X_n1_1)
 
 ### Training Loss Vs Iteration Plot
 
-![image](https://github.com/user-attachments/assets/edbf5dca-b68d-40ad-8cd0-586079fc3761)
+![image](https://github.com/user-attachments/assets/c66ce4b4-4bab-4ef1-861f-5d5639fd6006)
 
 
 
@@ -141,16 +118,16 @@ ai_brain.predict(X_n1_1)
 
 Find the test data root mean squared error
 
-![image](https://github.com/user-attachments/assets/ecabc9e3-873d-49d4-9b9f-fb577139ff44)
 
-![image](https://github.com/user-attachments/assets/59d4e04d-61f5-466e-b3be-7481bbf77e63)
+![image](https://github.com/user-attachments/assets/e8a1aac5-6e0a-4bb7-a9ec-6993993f79c0)
 
 
 ### New Sample Data Prediction
 
-![image](https://github.com/user-attachments/assets/11a629d1-7bf9-4088-b670-72160be31cdf)
+![image](https://github.com/user-attachments/assets/a5dd89f5-c0b4-47f0-b006-67aa3bcd43a7)
+
 
 
 ## RESULT
 
-Thus a neural network regression model for the given dataset is written and executed successfully
+Thus a neural network regression model for the given dataset is written and executed successfully.
